@@ -4,7 +4,7 @@
   "description": "Sends emails in response to events",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo 'We are bad people who have not written any tests yet.'",
     "start": "node index.js"
   },
   "repository": {
