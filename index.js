@@ -18,6 +18,6 @@ streamClient.consumer.on('member-registered', member => {
   console.log('Sending mail to:', member.email);
 });
 
-app.listen(8080, () => {
+app.listen(3001, () => {
   console.log('Listening for events');
 });
