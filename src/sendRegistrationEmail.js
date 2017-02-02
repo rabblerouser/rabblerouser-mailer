@@ -4,7 +4,12 @@ const config = require('./config');
 const data = string => ({ Data: string });
 
 const sendRegistrationEmail = email => {
-  const ses = new aws.SES({ region: config.sesRegion });
+  const ses = new aws.SES({
+    region: config.sesRegion,
+    accessKeyId: config.accessKeyId,
+    secretAccessKey: config.secretAccessKey,
+  });
+
   const sesParams = {
     Source: config.emailFromAddress,
     ReplyToAddresses: [config.emailFromAddress],
