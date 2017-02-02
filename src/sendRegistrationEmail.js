@@ -21,12 +21,14 @@ const sendRegistrationEmail = email => {
       },
     },
   };
-  ses.sendEmail(sesParams, (err, res) => {
-    if (err) {
-      console.error('Failed to send email:', err);
-    } else {
-      console.log('Email sent:', res);
-    }
+  return new Promise((resolve, reject) => {
+    ses.sendEmail(sesParams, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
   });
 }
 

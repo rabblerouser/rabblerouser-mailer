@@ -16,9 +16,7 @@ const streamClient = createClient(streamClientSettings);
 
 app.post('/mail', streamClient.consumer);
 
-streamClient.consumer.on('member-registered', member => {
-  sendRegistrationEmail(member.email);
-});
+streamClient.consumer.on('member-registered', member => sendRegistrationEmail(member.email));
 
 app.listen(3001, () => {
   console.log('Listening for events');
