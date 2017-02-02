@@ -26,7 +26,7 @@ describe('sendRegistrationEmail', () => {
       Message: {
         Subject: { Data: 'Thanks for joining!' },
         Body: {
-          Text: { Data: "We're excited to have you on board" },
+          Text: { Data: "We're excited to have you on board." },
         },
       },
     });
