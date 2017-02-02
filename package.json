@@ -4,8 +4,8 @@
   "description": "Sends emails in response to events",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'We are bad people who have not written any tests yet.'",
-    "start": "node index.js"
+    "test": "NODE_ENV=test mocha -r src/__tests__/testGlobals.js --recursive src/__tests__",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,15 @@
   },
   "homepage": "https://github.com/rabblerouser/rabblerouser-mailer#readme",
   "dependencies": {
+    "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",
     "express": "^4.14.1",
     "rabblerouser-stream-client": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0"
   }
 }
