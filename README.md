@@ -20,13 +20,25 @@ If you want it to work locally, so you can test it manually, then you need to do
 for instructions. Once you've done that, configure your AWS credentials as normal, and then start it like this:
 
 ```sh
-EMAIL_FROM_ADDRESS=sender@ses-verified-domain.com npm start
+EMAIL_FROM_ADDRESS='sender@ses-verified-domain.com' npm start
 ```
 
 You can send it an email request like this:
 
 ```sh
-curl -X POST -H 'Content-Type: application/json' localhost:3001/mail -d '{ "type": "member-registered", "data": { "email": "ses-verified-address@example.com" } }'
+curl -X POST -H 'Content-Type: application/json' -H 'Authorization: secret' localhost:3001/mail -d '{ "type": "member-registered", "data": { "email": "ses-verified-address@example.com" } }'
+```
+
+Alternatively you can run it with Docker. After doing `npm install`, you can build it with:
+
+```sh
+docker build -t rabblerouser/rabblerouser-mailer .
+```
+
+Then you can run it with:
+
+```
+docker run -p 3001:3001 --e EMAIL_FROM_ADDRESS='sender@ses-verified-domain.com' -e AWS_ACCESS_KEY_ID=ABC123 -e AWS_SECRET_ACCESS_KEY=DEF456 rabblerouser/rabblerouser-mailer -t --name rabblerouser-mailer
 ```
 
 ## SES Setup
