@@ -9,14 +9,12 @@ const app = express();
 app.use(bodyParser.json());
 
 const streamClientSettings = {
-  stream: 'TODO: Should not need this param',
-  eventAuthToken: config.eventAuthToken,
+  listenWithAuthToken: config.listenerAuthToken,
 };
 const streamClient = createClient(streamClientSettings);
 
-app.post('/mail', streamClient.consumer);
-
-streamClient.consumer.on('member-registered', member => sendRegistrationEmail(member.email));
+streamClient.on('member-registered', member => sendRegistrationEmail(member.email));
+app.post('/mail', streamClient.listen());
 
 app.listen(3001, () => {
   console.log('Listening for events');
