@@ -1,5 +1,5 @@
 {
-  "name": "rabblerouser-mailer",
+  "name": "@rabblerouser/mailer",
   "version": "1.0.0",
   "description": "Sends emails in response to events",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rabblerouser/rabblerouser-mailer.git"
+    "url": "git+https://github.com/rabblerouser/mailer.git"
   },
   "author": "Rabble Rouser Team",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/rabblerouser/rabblerouser-mailer/issues"
+    "url": "https://github.com/rabblerouser/mailer/issues"
   },
-  "homepage": "https://github.com/rabblerouser/rabblerouser-mailer#readme",
+  "homepage": "https://github.com/rabblerouser/mailer#readme",
   "dependencies": {
     "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",

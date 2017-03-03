@@ -1,4 +1,4 @@
-# rabblerouser-mailer
+# Rabble Rouser Mailer
 Sends emails using AWS SES in response to the following events:
 
  - `member-registered`
@@ -32,13 +32,13 @@ curl -X POST -H 'Content-Type: application/json' -H 'Authorization: secret' loca
 Alternatively you can run it with Docker. After doing `npm install`, you can build it with:
 
 ```sh
-docker build -t rabblerouser/rabblerouser-mailer .
+docker build -t rabblerouser/mailer .
 ```
 
 Then you can run it with:
 
 ```
-docker run -p 3001:3001 --e EMAIL_FROM_ADDRESS='sender@ses-verified-domain.com' -e AWS_ACCESS_KEY_ID=ABC123 -e AWS_SECRET_ACCESS_KEY=DEF456 rabblerouser/rabblerouser-mailer -t --name rabblerouser-mailer
+docker run -p 3001:3001 --e EMAIL_FROM_ADDRESS='sender@ses-verified-domain.com' -e AWS_ACCESS_KEY_ID=ABC123 -e AWS_SECRET_ACCESS_KEY=DEF456 rabblerouser/mailer -t --name rabblerouser-mailer
 ```
 
 ## SES Setup
