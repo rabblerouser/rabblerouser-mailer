@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const createClient = require('rabblerouser-stream-client');
+const createClient = require('@rabblerouser/stream-client');
 
 const config = require('./config');
 const sendRegistrationEmail = require('./sendRegistrationEmail')
