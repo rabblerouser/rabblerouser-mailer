@@ -1,4 +1,7 @@
 # Rabble Rouser Mailer
+
+[![Build Status](https://travis-ci.org/rabblerouser/mailer.svg?branch=master)](https://travis-ci.org/rabblerouser/mailer)
+
 Sends emails using AWS SES in response to the following events:
 
  - `member-registered`

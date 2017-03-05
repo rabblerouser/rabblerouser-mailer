@@ -1,15 +1,10 @@
 sudo: required
+services:
+- docker
 
 language: node_js
 node_js:
   - "6"
-
-services:
-  - docker
-
-install: npm install
-
-script: npm test
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then docker-build-and-deploy.sh; fi
