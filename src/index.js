@@ -13,7 +13,7 @@ const streamClientSettings = {
 };
 const streamClient = createClient(streamClientSettings);
 
-streamClient.on('member-registered', member => sendRegistrationEmail(member.email));
+streamClient.on('member-registered', sendRegistrationEmail);
 app.post('/events', streamClient.listen());
 
 app.listen(3001, () => {

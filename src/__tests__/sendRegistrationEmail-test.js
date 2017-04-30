@@ -1,15 +1,13 @@
-const aws = require('aws-sdk');
 const config = require('../config');
+const ses = require('../ses');
 const sendRegistrationEmail = require('../sendRegistrationEmail');
 
 describe('sendRegistrationEmail', () => {
   let sandbox;
-  let sendEmail;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    sendEmail = sinon.spy();
-    sandbox.stub(aws, 'SES').returns({ sendEmail });
+    sandbox.stub(ses, 'sendEmail').returns({ promise: () => {} });
     config.emailFromAddress = 'admin@rr.com';
   });
 
@@ -18,9 +16,9 @@ describe('sendRegistrationEmail', () => {
   });
 
   it('sends an email with default messaging using SES', () => {
-    sendRegistrationEmail('new@member.com')
+    sendRegistrationEmail({ email: 'new@member.com' });
 
-    expect(sendEmail).to.have.been.calledWith({
+    expect(ses.sendEmail).to.have.been.calledWith({
       Source: 'admin@rr.com',
       ReplyToAddresses: ['admin@rr.com'],
       Destination: { ToAddresses: ['new@member.com'] },
@@ -34,19 +32,14 @@ describe('sendRegistrationEmail', () => {
   });
 
   it('returns a resolved promise if SES succeeds', () => {
-    const result = sendRegistrationEmail('new@member.com');
+    ses.sendEmail.returns({ promise: () => Promise.resolve() });
 
-    cb = sendEmail.args[0][1];
-    cb(null, 'Email sent!');
-
-    return result;
+    return sendRegistrationEmail({ email: 'new@member.com' });
   });
 
   it('returns a rejected promise if SES succeeds', () => {
-    const result = sendRegistrationEmail('new@member.com');
-
-    cb = sendEmail.args[0][1];
-    cb('Email sending failed!');
+    ses.sendEmail.returns({ promise: () => Promise.reject() });
+    const result = sendRegistrationEmail({ email: 'new@member.com' });
 
     return result.then(() => {
       throw new Error('Should not have got here');

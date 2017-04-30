@@ -1,35 +1,21 @@
-const aws = require('aws-sdk');
 const config = require('./config');
+const ses = require('./ses');
 
 const data = string => ({ Data: string });
 
-const sendRegistrationEmail = email => {
-  const ses = new aws.SES({
-    region: config.sesRegion,
-    accessKeyId: config.accessKeyId,
-    secretAccessKey: config.secretAccessKey,
-  });
-
+const sendRegistrationEmail = (member) => {
   const sesParams = {
     Source: config.emailFromAddress,
     ReplyToAddresses: [config.emailFromAddress],
-    Destination: { ToAddresses: [email] },
+    Destination: { ToAddresses: [member.email] },
     Message: {
-      Subject: data(config.registrationSubject),
+      Subject: data('Thanks for joining!'),
       Body: {
-        Text: data(config.registrationBody),
+        Text: data("We're excited to have you on board."),
       },
     },
   };
-  return new Promise((resolve, reject) => {
-    ses.sendEmail(sesParams, (err, res) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(res);
-      }
-    });
-  });
-}
+  return ses.sendEmail(sesParams).promise();
+};
 
 module.exports = sendRegistrationEmail;
