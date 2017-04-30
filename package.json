@@ -21,7 +21,9 @@
     "@rabblerouser/stream-client": "^0.8.8",
     "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",
-    "express": "^4.14.1"
+    "express": "^4.14.1",
+    "morgan": "^1.8.1",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
