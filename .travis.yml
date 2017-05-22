@@ -6,5 +6,10 @@ language: node_js
 node_js:
   - "6"
 
+install: npm install
+script:
+  - ./go.sh npm run lint
+  - ./go.sh npm test
+
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then ./docker-build-and-deploy.sh; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then bin/docker-build-and-deploy.sh; fi

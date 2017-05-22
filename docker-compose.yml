@@ -1,0 +1,40 @@
+version: '2'
+services:
+  mailer:
+    build:
+      context: docker/
+      dockerfile: Dockerfile.dev
+    volumes:
+      - '.:/app'
+    ports:
+      - "3001:3001"
+    depends_on:
+      - kinesis
+      - ses
+    environment:
+      NODE_ENV: development
+      KINESIS_ENDPOINT: http://kinesis:4567
+      SES_ENDPOINT: http://ses:9001
+      LISTENER_AUTH_TOKEN: secret
+      STREAM_NAME: rabblerouser_stream
+      EMAIL_FROM_ADDRESS: someone@example.com
+    command: sleep 2147483647 # Sleep forever, we'll shell into the container later
+    stdin_open: true
+    user: $UID
+    tty: true
+  event-forwarder:
+    image: rabblerouser/event-forwarder
+    depends_on:
+      - kinesis
+      - mailer
+    environment:
+      KINESIS_ENDPOINT: http://kinesis:4567
+      LISTENER_ENDPOINT: http://mailer:3001/events
+      LISTENER_AUTH_TOKEN: secret
+      STREAM_NAME: rabblerouser_stream
+  kinesis:
+    image: instructure/kinesalite
+  ses:
+    image: camjackson/aws-ses-local
+    volumes:
+      - ./sent-mail:/aws-ses-local/output

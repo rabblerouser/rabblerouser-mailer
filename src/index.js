@@ -1,21 +1,22 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const createClient = require('@rabblerouser/stream-client');
+const morgan = require('morgan');
 
-const config = require('./config');
-const sendRegistrationEmail = require('./sendRegistrationEmail')
+const logger = require('./logger');
+const streamClient = require('./streamClient');
+const sendRegistrationEmail = require('./sendRegistrationEmail');
+const sendEmail = require('./sendEmail');
 
 const app = express();
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'));
+}
 app.use(bodyParser.json());
 
-const streamClientSettings = {
-  listenWithAuthToken: config.listenerAuthToken,
-};
-const streamClient = createClient(streamClientSettings);
-
-streamClient.on('member-registered', member => sendRegistrationEmail(member.email));
+streamClient.on('member-registered', sendRegistrationEmail);
+streamClient.on('send-email', sendEmail);
 app.post('/events', streamClient.listen());
 
 app.listen(3001, () => {
-  console.log('Listening for events');
+  logger.info('Listening for events');
 });
