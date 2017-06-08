@@ -11,12 +11,18 @@ services:
     depends_on:
       - kinesis
       - ses
+      - s3
     environment:
       NODE_ENV: development
       KINESIS_ENDPOINT: http://kinesis:4567
       SES_ENDPOINT: http://ses:9001
       LISTENER_AUTH_TOKEN: secret
       STREAM_NAME: rabblerouser_stream
+<<<<<<< bfb07e26c5b968d673052faec760034b10121198
+=======
+      EMAIL_FROM_ADDRESS: someone@example.com
+      S3_ENDPOINT: http://s3:4569
+>>>>>>> Add S3 stuff that does not work.
     command: sleep 2147483647 # Sleep forever, we'll shell into the container later
     stdin_open: true
     user: $UID
@@ -37,3 +43,5 @@ services:
     image: camjackson/aws-ses-local
     volumes:
       - ./sent-mail:/aws-ses-local/output
+  s3:
+    image: lphoward/fake-s3

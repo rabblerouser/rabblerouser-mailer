@@ -1,7 +1,8 @@
-const aws = require('aws-sdk');
-const config = require('./config');
+const AWS = require('aws-sdk');
 
-module.exports = new aws.S3({
-  accessKeyId: config.accessKeyId,
-  secretAccessKey: config.secretAccessKey,
+module.exports = new AWS.S3({
+  endpoint: process.env.S3_ENDPOINT,
+  region: 'ap-southeast-2',
+  accessKeyId: 'FAKE',
+  secretAccessKey: 'ALSO FAKE',
 });
