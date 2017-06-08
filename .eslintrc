@@ -9,3 +9,6 @@ rules:
   comma-dangle:
     - error
     - always-multiline
+  arrow-body-style:
+    - error
+    - as-needed
