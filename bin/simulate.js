@@ -19,7 +19,7 @@ const event = {
 streamClient.publish('send-email', event);
 
 
-s3.createBucket({ Bucket: 'rr-group-mailer' }).promise().then(
-  () => console.log(`rr-group-mailer created`),
-  err => { throw new Error(`Could not create bucket: ${err.message}`); }
-);
+s3.createBucket({ Bucket: 'rr-group-mailer' })
+.promise()
+.then(() => console.log('rr-group-mailer created'))
+.catch((err) => { throw new Error(`Could not create bucket: ${err.message}`); });
