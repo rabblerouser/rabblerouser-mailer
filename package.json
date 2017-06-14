@@ -26,6 +26,7 @@
     "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",
     "express": "^4.14.1",
+    "mailparser": "^2.0.5",
     "morgan": "^1.8.1",
     "winston": "^2.3.1"
   },
