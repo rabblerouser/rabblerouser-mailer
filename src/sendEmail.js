@@ -29,14 +29,15 @@ const sendEmail = (email) => {
 
   const sentRecipients = [];
   const failedRecipients = [];
+
   return Promise.all(to.map((recipient) => {
     const sesParams = Object.assign({}, commonSesParams, {
       Destination: { ToAddresses: [recipient] },
     });
-    return ses.sendEmail(sesParams).promise().then(
-      () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
-      () => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`)
-    );
+    return ses.sendEmail(sesParams)
+    .promise()
+    .then(() => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`))
+    .catch(() => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`));
   }))
   .then(publishEmailEvent('email-sent', id, sentRecipients))
   .then(publishEmailEvent('email-failed', id, failedRecipients));
