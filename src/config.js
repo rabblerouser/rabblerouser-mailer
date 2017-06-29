@@ -7,6 +7,4 @@ module.exports = {
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'FAKE',
   streamName: process.env.STREAM_NAME,
   listenerAuthToken: process.env.LISTENER_AUTH_TOKEN || 'secret',
-
-  emailFromAddress: process.env.EMAIL_FROM_ADDRESS,
 };

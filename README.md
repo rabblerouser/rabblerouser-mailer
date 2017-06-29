@@ -4,8 +4,8 @@
 
 
 This service sends emails using SES, in response to `send-email` events from the main stream. It should not know any
-domain / business information about why it is sending those emails. It simply receives the generic requests and fulfills
-them. *(Right now it knows about `member-registered` events, but it shouldn't.)*
+domain / business information about why it is sending those emails. It simply receives the generic requests and fulfils
+them.
 
 ## Setup
 
