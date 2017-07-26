@@ -17,7 +17,6 @@ services:
       SES_ENDPOINT: http://ses:9001
       LISTENER_AUTH_TOKEN: secret
       STREAM_NAME: rabblerouser_stream
-      EMAIL_FROM_ADDRESS: someone@example.com
     command: sleep 2147483647 # Sleep forever, we'll shell into the container later
     stdin_open: true
     user: $UID
