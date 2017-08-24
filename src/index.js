@@ -15,6 +15,6 @@ app.use(bodyParser.json());
 streamClient.on('send-email', sendEmail);
 app.post('/events', streamClient.listen());
 
-app.listen(3001, () => {
+app.listen(process.env.PORT || 3001, () => {
   logger.info('Listening for events');
 });
