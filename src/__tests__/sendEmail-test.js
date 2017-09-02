@@ -59,7 +59,19 @@ describe('sendEmail', () => {
       });
     });
 
+    it('attempts to publish a failure event if the body cannot be fetched from s3', () => {
+      s3BodyBuilder.build.returns(Promise.reject('Email not found'));
+
+      return sendEmail(s3Email).then((err) => {
+        expect(streamClient.publish).to.have.been.calledWith('email-failed', {
+          emailId: '123-456',
+          to: ['john@example.com', 'jane@example.com'],
+        });
+        expect(streamClient.publish.callCount).to.eql(1);
+      });
+    });
   });
+
   describe('when the email event includes the body', () => {
     it('sends an email to each recipient', () => {
       ses.sendEmail.returns(awsSuccess());

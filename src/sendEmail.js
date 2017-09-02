@@ -49,6 +49,10 @@ const sendEmail = (email) => {
   const failedRecipients = [];
 
   return assembleEmail(email)
+    .catch((err) => {
+      logger.error(`Failed to fetch email with id: ${id} from s3`);
+      return publishEmailEvent('email-failed', id, to);
+    })
     .then(emailParams => {
 
       return Promise.all(to.map((recipient) => {
