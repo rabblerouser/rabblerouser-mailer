@@ -13,8 +13,10 @@ const publishEmailEvent = (eventType, emailId, recipients) => () => {
     });
 };
 
-const sendEmail = (email) => {
-  const { id, from, to, subject, body } = email;
+const extractEmailInformation = eventData => (eventData);
+
+const sendEmail = (eventData) => {
+  const { id, from, to, subject, body } = extractEmailInformation(eventData);
 
   const commonSesParams = {
     Source: from,
@@ -34,8 +36,8 @@ const sendEmail = (email) => {
     const sesParams = Object.assign({}, commonSesParams, {
       Destination: { ToAddresses: [recipient] },
     });
-    return ses.sendEmail(sesParams)
-    .promise()
+
+    return ses.sendEmail(sesParams).promise()
     .then(() => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`))
     .catch(() => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`));
   }))

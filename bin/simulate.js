@@ -1,5 +1,4 @@
 const createClient = require('@rabblerouser/stream-client');
-const s3 = require('../src/s3');
 
 const streamClient = createClient({
   publishToStream: process.env.STREAM_NAME,
@@ -17,9 +16,3 @@ const event = {
   body: 'It is very important that you do the thing.',
 };
 streamClient.publish('send-email', event);
-
-
-s3.createBucket({ Bucket: 'rr-group-mailer' })
-.promise()
-.then(() => console.log('rr-group-mailer created'))
-.catch((err) => { throw new Error(`Could not create bucket: ${err.message}`); });
