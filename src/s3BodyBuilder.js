@@ -6,7 +6,7 @@ const build = (emailBodyLocation) => {
   const bucket = config.s3EmailBucket;
   return s3.getObject({ Key: emailBodyLocation, Bucket: bucket })
     .promise()
-    .then(mailParser)
+    .then(s3Object => mailParser(s3Object.Body))
     .then(mail => mail.html)
     .catch(() => {
       throw new Error('Email not found');

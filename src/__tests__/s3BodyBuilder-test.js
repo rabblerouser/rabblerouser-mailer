@@ -23,7 +23,7 @@ describe('s3BodyBuilder', () => {
   const awsFailure = error => ({ promise: () => Promise.reject(error) });
 
   it('should fetch the mime file from the S3 email bucket', () => {
-    s3.getObject.returns(awsSuccess(emailFixture));
+    s3.getObject.returns(awsSuccess({ Body: emailFixture }));
 
     return s3BodyBuilder('emailBodyLocation').then(() => {
       expect(s3.getObject).to.have.been.calledWith({
@@ -34,7 +34,7 @@ describe('s3BodyBuilder', () => {
   });
 
   it('should return the email body', () => {
-    s3.getObject.returns(awsSuccess(emailFixture));
+    s3.getObject.returns(awsSuccess({ Body: emailFixture }));
 
     return s3BodyBuilder('emailBodyLocation').then((emailBody) => {
       expect(emailBody).to.equal('<div dir="ltr">I am an email.</div>\n');
