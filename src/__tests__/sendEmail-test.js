@@ -32,7 +32,7 @@ describe('sendEmail', () => {
       from: 'campaigns@rabblerouser.team',
       to: ['john@example.com'],
       subject: 'Do the thing!',
-      bodyLocation: 'theEmailIsHere'
+      bodyLocation: 'theEmailIsHere',
     };
     const emailBody = 'I am a long email';
 
@@ -42,7 +42,7 @@ describe('sendEmail', () => {
 
     it('fetches the email body from s3', () => {
       ses.sendEmail.returns(awsSuccess({}));
-      s3BodyBuilder.build.returns(Promise.resolve(emailBody));
+      s3BodyBuilder.build.resolves(emailBody);
 
       return sendEmail(s3Email).then(() => {
         expect(ses.sendEmail).to.have.been.calledWith({
@@ -60,9 +60,9 @@ describe('sendEmail', () => {
     });
 
     it('attempts to publish a failure event if the body cannot be fetched from s3', () => {
-      s3BodyBuilder.build.returns(Promise.reject('Email not found'));
+      s3BodyBuilder.build.rejects('Email not found');
 
-      return sendEmail(s3Email).then((err) => {
+      return sendEmail(s3Email).then(() => {
         expect(streamClient.publish).to.have.been.calledWith('email-failed', {
           emailId: '123-456',
           to: ['john@example.com'],
@@ -101,7 +101,6 @@ describe('sendEmail', () => {
         });
       });
     });
-
   });
 
   it('publishes a single event for all email successes', () => {

@@ -1,7 +1,7 @@
 const logger = require('./logger');
 const ses = require('./ses');
 const streamClient = require('./streamClient');
-const s3BodyBuilder = require('./s3BodyBuilder.js')
+const s3BodyBuilder = require('./s3BodyBuilder.js');
 
 const data = string => ({ Data: string });
 
@@ -23,45 +23,42 @@ const sesParams = (email) => {
     Message: {
       Subject: data(subject),
       Body: {
-        Html: data(body)
-      }
-    }
+        Html: data(body),
+      },
+    },
   };
 };
 
 const assembleEmail = (email) => {
   const { from, subject, body, bodyLocation } = email;
 
-  if (!body) {
-    return s3BodyBuilder.build(bodyLocation).then((body) => {
-      return sesParams({ from, subject, body });
-    });
-  }
-  else {
+  if (body) {
     return Promise.resolve(sesParams({ from, subject, body }));
   }
+
+  return s3BodyBuilder.build(bodyLocation).then(largeBody => (
+    sesParams({ from, subject, body: largeBody })
+  ));
 };
 
-const sendEmail = (email) => {
-  const { to, id } = email;
+const sendEmail = (emailEvent) => {
+  const { to, id } = emailEvent;
 
   const sentRecipients = [];
   const failedRecipients = [];
 
-  return assembleEmail(email)
-    .then(emailParams => {
-
-      return Promise.all(to.map((recipient) => {
-
-        const sesParams = Object.assign({}, emailParams, {
+  return assembleEmail(emailEvent)
+    .then(email => (
+      Promise.all(to.map((recipient) => {
+        const finalSesParams = Object.assign({}, email, {
           Destination: { ToAddresses: [recipient] },
         });
-        return ses.sendEmail(sesParams).promise().then(
+        return ses.sendEmail(finalSesParams).promise().then(
           () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
           () => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`)
         );
-      }));
-    })
+      }))
+    ))
     .then(publishEmailEvent('email-sent', id, sentRecipients))
     .then(publishEmailEvent('email-failed', id, failedRecipients))
     .catch((err) => {

@@ -45,7 +45,7 @@ describe('s3BodyBuilder', () => {
     s3.getObject.returns(awsFailure());
 
     return s3BodyBuilder('emailBodyLocation').catch((err) => {
-      expect(err).to.equal('Email not found');
+      expect(err.message).to.equal('Email not found');
     });
   });
 });

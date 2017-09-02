@@ -9,7 +9,7 @@ const build = (emailBodyLocation) => {
     .then(mailParser)
     .then(mail => mail.html)
     .catch(() => {
-      throw 'Email not found';
+      throw new Error('Email not found');
     });
 };
 
