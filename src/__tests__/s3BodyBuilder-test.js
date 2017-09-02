@@ -28,7 +28,7 @@ describe('s3BodyBuilder', () => {
     return s3BodyBuilder('emailBodyLocation').then(() => {
       expect(s3.getObject).to.have.been.calledWith({
         Key: 'emailBodyLocation',
-        Bucket: 'bucket',
+        Bucket: 'email-bucket',
       });
     });
   });

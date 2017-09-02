@@ -66,7 +66,7 @@ const sendEmail = (email) => {
     .then(publishEmailEvent('email-failed', id, failedRecipients))
     .catch((err) => {
       logger.error(`Failed to fetch email with id: ${id} from s3 with error ${err}`);
-      return publishEmailEvent('email-failed', id, to);
+      return publishEmailEvent('email-failed', id, to)();
     });
 };
 

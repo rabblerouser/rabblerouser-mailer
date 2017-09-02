@@ -65,7 +65,7 @@ describe('sendEmail', () => {
       return sendEmail(s3Email).then((err) => {
         expect(streamClient.publish).to.have.been.calledWith('email-failed', {
           emailId: '123-456',
-          to: ['john@example.com', 'jane@example.com'],
+          to: ['john@example.com'],
         });
         expect(streamClient.publish.callCount).to.eql(1);
       });
