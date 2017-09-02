@@ -1,19 +1,13 @@
 const s3 = require('./s3');
-const mailParser = require('mailParser');
+const config = require('./config');
+const mailParser = require('mailparser').simpleParser;
 
-const parseMimeFile = (mimeFile) => {
-  return {
-    to: 'email@gmail.com',
-    from: 'email@notyourbusiness.com',
-    subject: 'Check this out',
-    body: 'Some important text',
-    attachments: [],
-  };
+const build = (emailBodyLocation) => {
+  const bucket = config.s3EmailBucket;
+  return s3.getObject({ Key: emailBodyLocation, Bucket: bucket })
+    .promise()
+    .then(mailParser)
+    .then(mail => mail.html);
 };
 
-function fetchEmailBodyFromS3(emailBodyLocation) {
-  return s3.getObject(emailBodyLocation).promise()
-  .then(parseMimeFile);
-}
-
-module.export = fetchEmailBodyFromS3;
+module.exports = build;
