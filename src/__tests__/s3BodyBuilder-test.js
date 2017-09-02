@@ -20,6 +20,7 @@ describe('s3BodyBuilder', () => {
   });
 
   const awsSuccess = data => ({ promise: () => Promise.resolve(data) });
+  const awsFailure = error => ({ promise: () => Promise.reject(error) });
 
   it('should fetch the mime file from the S3 email bucket', () => {
     s3.getObject.returns(awsSuccess(emailFixture));
@@ -39,5 +40,12 @@ describe('s3BodyBuilder', () => {
       expect(emailBody).to.equal('<div dir="ltr">I am an email.</div>\n');
     });
   });
-  it('should fail if the mime file is not found');
+
+  it('should fail if the mime file is not found', () => {
+    s3.getObject.returns(awsFailure());
+
+    return s3BodyBuilder('emailBodyLocation').catch((err) => {
+      expect(err).to.equal('Email not found');
+    });
+  });
 });

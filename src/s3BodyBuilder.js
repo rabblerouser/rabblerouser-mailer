@@ -7,7 +7,10 @@ const build = (emailBodyLocation) => {
   return s3.getObject({ Key: emailBodyLocation, Bucket: bucket })
     .promise()
     .then(mailParser)
-    .then(mail => mail.html);
+    .then(mail => mail.html)
+    .catch(() => {
+      throw 'Email not found';
+    });
 };
 
 module.exports = build;
