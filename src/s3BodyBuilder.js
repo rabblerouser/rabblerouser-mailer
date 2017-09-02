@@ -13,4 +13,4 @@ const build = (emailBodyLocation) => {
     });
 };
 
-module.exports = build;
+module.exports.build = build;

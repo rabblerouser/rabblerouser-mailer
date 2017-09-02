@@ -1,6 +1,7 @@
 const logger = require('./logger');
 const ses = require('./ses');
 const streamClient = require('./streamClient');
+const s3BodyBuilder = require('./s3BodyBuilder.js')
 
 const data = string => ({ Data: string });
 
@@ -13,23 +14,32 @@ const publishEmailEvent = (eventType, emailId, recipients) => () => {
     });
 };
 
-
-const assembleEmail = (email) => {
+const sesParams = (email) => {
   const { from, subject, body } = email;
 
-  const commonSesParams = {
+  return {
     Source: from,
     ReplyToAddresses: [from],
     Message: {
       Subject: data(subject),
       Body: {
-        Html: data(body),
-      },
-    },
-
+        Html: data(body)
+      }
+    }
   };
+};
 
-  return Promise.resolve(commonSesParams);
+const assembleEmail = (email) => {
+  const { from, subject, body, bodyLocation } = email;
+
+  if (!body) {
+    return s3BodyBuilder.build(bodyLocation).then((body) => {
+      return sesParams({ from, subject, body });
+    });
+  }
+  else {
+    return Promise.resolve(sesParams({ from, subject, body }));
+  }
 };
 
 const sendEmail = (email) => {
@@ -39,21 +49,21 @@ const sendEmail = (email) => {
   const failedRecipients = [];
 
   return assembleEmail(email)
-  .then(commonSesParams => {
+    .then(emailParams => {
 
-    return Promise.all(to.map((recipient) => {
+      return Promise.all(to.map((recipient) => {
 
-      const sesParams = Object.assign({}, commonSesParams, {
-        Destination: { ToAddresses: [recipient] },
-      });
-      return ses.sendEmail(sesParams).promise().then(
-        () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
-        () => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`)
-      );
-    }))
-  })
-  .then(publishEmailEvent('email-sent', id, sentRecipients))
-  .then(publishEmailEvent('email-failed', id, failedRecipients));
+        const sesParams = Object.assign({}, emailParams, {
+          Destination: { ToAddresses: [recipient] },
+        });
+        return ses.sendEmail(sesParams).promise().then(
+          () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
+          () => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`)
+        );
+      }));
+    })
+    .then(publishEmailEvent('email-sent', id, sentRecipients))
+    .then(publishEmailEvent('email-failed', id, failedRecipients));
 };
 
 module.exports = sendEmail;
