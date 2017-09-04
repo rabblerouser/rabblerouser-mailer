@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const config = require('../config');
+config.s3EmailBucket = 'email-bucket';
+
 const s3 = require('../s3');
 const s3BodyBuilder = require('../s3BodyBuilder').build;
 
@@ -25,9 +28,10 @@ describe('s3BodyBuilder', () => {
   it('should fetch the mime file from the S3 email bucket', () => {
     s3.getObject.returns(awsSuccess({ Body: emailFixture }));
 
-    return s3BodyBuilder('emailBodyLocation').then(() => {
+    return s3BodyBuilder('s3://something.emailBodyLocation')
+    .then(() => {
       expect(s3.getObject).to.have.been.calledWith({
-        Key: 'emailBodyLocation',
+        Key: 's3://something.emailBodyLocation',
         Bucket: 'email-bucket',
       });
     });
