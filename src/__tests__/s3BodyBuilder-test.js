@@ -1,14 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-
 const config = require('../config');
-config.s3EmailBucket = 'email-bucket';
-
 const s3 = require('../s3');
 const s3BodyBuilder = require('../s3BodyBuilder').build;
 
 const emailFixturePath = path.join(__dirname, 'fixtures', 'mimeFile.txt');
 const emailFixture = fs.readFileSync(emailFixturePath, 'utf-8');
+
+config.s3EmailBucket = 'email-bucket';
 
 describe('s3BodyBuilder', () => {
   let sandbox;
