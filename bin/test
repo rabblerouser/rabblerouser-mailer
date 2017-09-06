@@ -1,4 +1,6 @@
-#!/bin/bash
-set -eu
+#!/bin/bash -eu
 
-docker-compose run --no-deps mailer npm test 
+cd $(dirname $0)/..
+
+echo "--- Running tests"
+bin/ci-environment npm test

@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+cd $(dirname $0)/..
+
+# Clean up at the end
+trap "docker-compose down --volumes" 0
+
+# Build dev image
+docker-compose build mailer
+
+# Give a shell or run what's passed in as arguments
+docker-compose run --rm --no-deps --name mailer-ci mailer "${@-bash}"
