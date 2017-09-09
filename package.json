@@ -10,7 +10,8 @@
     "test": "NODE_ENV=test mocha -r src/__tests__/testGlobals.js --recursive src/__tests__",
     "seed": "node bin/seed.js",
     "simulate": "node bin/simulate.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "local": "npm run seed && npm run dev"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,6 @@
 const createClient = require('@rabblerouser/stream-client');
 
+
 const streamClient = createClient({
   publishToStream: process.env.STREAM_NAME,
   kinesisEndpoint: process.env.KINESIS_ENDPOINT,
@@ -15,4 +16,7 @@ const event = {
   subject: 'Do the thing!',
   body: 'It is very important that you do the thing.',
 };
-streamClient.publish('send-email', event);
+
+streamClient.publish('send-email', event)
+  .then(data => console.log('send-email event succesfuly published:', data))
+  .catch(error => console.log('send-email event publishing failed:', error));

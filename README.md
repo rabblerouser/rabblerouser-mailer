@@ -16,15 +16,12 @@ them.
 
 2. Start a Docker container to develop in (this also starts containers for dependent services):
 
-        ./go.sh # For Mac/Linux
+        `bin/dev-environment` # For Mac/Linux
         # Windows not supported yet :(
 
-3. Install dependencies, setup the event stream, run the tests, then start the app:
+3. Run the application locally:
 
-        npm install
-        npm run seed
-        npm test
-        npm run dev
+        `bin/local`
 
 4. Open up a second terminal, then simulate a `send-email` event (this will not trigger a real email to be sent -
   everything is local only):
