@@ -3,4 +3,4 @@
 cd $(dirname $0)/..
 
 echo "--- Simulate a send-email event"
-docker-compose run --no-deps mailer npm run simulate
+docker-compose run --no-deps --name simulation mailer npm run simulate
