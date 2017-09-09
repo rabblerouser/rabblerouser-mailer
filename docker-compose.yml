@@ -23,7 +23,7 @@ services:
     image: rabblerouser/event-forwarder
     environment:
       KINESIS_ENDPOINT: http://kinesis:4567
-      LISTENER_ENDPOINT: http://mailer:3001/events
+      LISTENER_ENDPOINT: http://mailer-dev:3001/events
       LISTENER_AUTH_TOKEN: secret
       STREAM_NAME: rabblerouser_stream
   kinesis:

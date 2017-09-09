@@ -9,4 +9,4 @@ trap "docker-compose down --volumes" 0
 docker-compose build mailer
 
 # Give a shell or run what's passed in as arguments
-docker-compose run --rm --service-ports mailer "${@-/bin/sh}"
+docker-compose run --rm --service-ports --name mailer-dev mailer "${@-/bin/sh}"
