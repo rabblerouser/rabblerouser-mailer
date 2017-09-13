@@ -28,7 +28,9 @@ const largeEmailEvent = {
   from: 'campaigns@rabblerouser.team',
   to: ['pam@example.com'],
   subject: 'This email body is coming to you from S3!',
-  bodyLocation: 'email-from-john',
+  bodyLocation: {
+    key: 'email-from-john',
+  },
 };
 
 streamClient.publish('send-email', largeEmailEvent)

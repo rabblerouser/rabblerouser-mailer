@@ -27,7 +27,7 @@ describe('s3BodyBuilder', () => {
   it('should fetch the mime file from the S3 email bucket', () => {
     s3.getObject.returns(awsSuccess({ Body: emailFixture }));
 
-    return s3BodyBuilder('s3://something.emailBodyLocation')
+    return s3BodyBuilder({ key: 's3://something.emailBodyLocation' })
     .then(() => {
       expect(s3.getObject).to.have.been.calledWith({
         Key: 's3://something.emailBodyLocation',
@@ -39,7 +39,7 @@ describe('s3BodyBuilder', () => {
   it('should return the email body', () => {
     s3.getObject.returns(awsSuccess({ Body: emailFixture }));
 
-    return s3BodyBuilder('emailBodyLocation').then((emailBody) => {
+    return s3BodyBuilder({ key: 'emailBodyLocation' }).then((emailBody) => {
       expect(emailBody).to.equal('<div dir="ltr">I am an email.</div>\n');
     });
   });
@@ -47,8 +47,8 @@ describe('s3BodyBuilder', () => {
   it('should fail if the mime file is not found', () => {
     s3.getObject.returns(awsFailure());
 
-    return s3BodyBuilder('emailBodyLocation').catch((err) => {
-      expect(err.message).to.equal('Email not found');
+    return s3BodyBuilder({ key: 'emailBodyLocation' }).catch((err) => {
+      expect(err.message).to.equal('Email body with {"key":"emailBodyLocation"} not found');
     });
   });
 });

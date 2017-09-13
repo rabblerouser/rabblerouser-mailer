@@ -53,7 +53,7 @@ const sendEmail = (emailEvent) => {
         const finalSesParams = Object.assign({}, email, {
           Destination: { ToAddresses: [recipient] },
         });
-        
+
         return ses.sendEmail(finalSesParams).promise()
         .then(
           () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
