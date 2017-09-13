@@ -1,0 +1,65 @@
+Return-Path: <jane.doe@notyourbusiness.com>
+Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com [209.85.161.180])
+ by inbound-smtp.us-west-2.amazonaws.com with SMTP id 0borq0nb95vj1r3l6ir58bs082gs09hm3tbcbuo1
+ for groups@rr-staging.click;
+ Sat, 22 Jul 2017 10:32:40 +0000 (UTC)
+X-SES-Spam-Verdict: PASS
+X-SES-Virus-Verdict: PASS
+Received-SPF: pass (spfCheck: domain of _spf.google.com designates 209.85.161.180 as permitted sender) client-ip=209.85.161.180; envelope-from=jane.doe@notyourbusiness.com; helo=mail-yw0-f180.google.com;
+Authentication-Results: amazonses.com;
+ spf=pass (spfCheck: domain of _spf.google.com designates 209.85.161.180 as permitted sender) client-ip=209.85.161.180; envelope-from=jane.doe@notyourbusiness.com; helo=mail-yw0-f180.google.com;
+ dkim=pass header.i=@notyourbusiness.com;
+X-SES-RECEIPT: AEFBQUFBQUFBQUFIdE15NlBuSEVrN0dkQ2hqSytPWnlCTG55aDFuZ2E0Y0pkYzhzUkcvc002N2RERGN1VWw0SldZaXB0eWtFcmdCMFRwNTMyT1VzNitoNjNCZjBlVHB1SEhZRzhLRFhWRFVXYyt0UjBVVHZZMlZaUkZCVW9VdzFtWW9FTG95Qy8wa2VQOHFMOFI4NXExR1p1aDVxT3hZK2g1ZEx6TmgvTWZ6R1UzL0lFc0xTNGVDZkdxaWJIbXdWQUx4Zjk4WjJlR3dndWI0QnBWbFZaMWdFWmoyU09lUGw5MHBzeEFYbWZmUkxaUGI2bTFYNFF0K2tyOHlOV3hyQlVITFdPeGtSV01mdFlxRlYxLzFwdUt2UlRVYmpXL3A3UA==
+X-SES-DKIM-SIGNATURE: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+    s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1500719561;
+    h=X-SES-RECEIPT:MIME-Version:From:Date:Message-ID:Subject:To:Content-Type;
+    bh=Im15eyiCMwLD2aN472gIoHac+uoz+qhgIP7MExF8ToY=;
+    b=a7Dl479Eixe07C5+tPG8n/BuksQfTAYnkLs/guJ86ykIPY+OZJvtwAFUbjBbp6kT
+    w1/LfahbTrQgqdXmgRJFunIa1S9qUK6osTwrd2o4y+R1Cr1kABCh9xPrOU6ufv9tgZG
+    +J7zI4OzRUDHjCN8VqclUZQzaFehqM2bJn7YXaeU=
+Received: by mail-yw0-f180.google.com with SMTP id a12so32053734ywh.3
+        for <groups@rr-staging.click>; Sat, 22 Jul 2017 03:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=notyourbusiness.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Im15eyiCMwLD2aN472gIoHac+uoz+qhgIP7MExF8ToY=;
+        b=VkvvsHefOhh09IwRb1r9fqsn5MpIrcenw2OagOY05PoVUd+21sSEj7qor34RQrLgct
+         /pdbLsGUnwTp6/hpobCgiHw5TogRaATlfxVMTWfwNq98IQtUThKC91OVxWy4EjK+JRaK
+         FWkZNiC9/jgbqWX/V9L4mMOwmQMCfppSZqTUgQDjTxACkWdjG3cJfEhKlZrNpXPhj8yw
+         0nuTyGrhW5uEuCRyuYALCN0o7i+yf7Im2TIbi9X9+pjxHpTsGaJXQPzLJKb46gwhnKee
+         TTXG9/oItaF8phjwEfgomg+VX3c4ePxlU1y/bp4LUWLmVqfRaukLtpfkZvqLvKGjIBEq
+         GbHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Im15eyiCMwLD2aN472gIoHac+uoz+qhgIP7MExF8ToY=;
+        b=LGzvPg1BugAGjh4cjgUxgs9r/JFJkGUDMhdwx9KQ8eRZ8pe7/Get8mmeETzv8gQpP5
+         vng68w7CisfEcr/rUMfWdaaJkt3cV7Vb8abocHSJcxJDQOEXpHmAzSymGx/X6pmrcJf8
+         KCvAhc0xQ4yiX14+oHWCc/5GAO+aeR5Uu09bbIk1aZH+koHBPD7ilYECjqZRqtKh4925
+         WuVmz/CxLzhzhr7TjKjxLH4gA4kmiCqJs2ZrZ/WEAj4M1Z1gFSvnff00ZwXqIaQPDwap
+         VcrksPbTSk19kH3krcJWnfuX5l+SIIJ/k5TYo0paOH/MdPMZECRJBMoD5EusnF5oMgku
+         jPDw==
+X-Gm-Message-State: AIVw113hSvX+jR0smgMJ/phzLUmryU51GSMsrwmlXDdOTKkSJ4t/P+J9
+    yq/l/R0MoueUqSiqVJnCwFc/1wyPeA==
+X-Received: by 10.13.193.129 with SMTP id c123mr8336899ywd.137.1500719559750;
+ Sat, 22 Jul 2017 03:32:39 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.37.73.65 with HTTP; Sat, 22 Jul 2017 03:32:39 -0700 (PDT)
+From: Jane Doe <jane.doe@notyourbusiness.com>
+Date: Sat, 22 Jul 2017 20:32:39 +1000
+Message-ID: <CAOc2pY-UsfDCCpyPFEcV+5v2kataA3WAJFx+sp8qdvsD=hsMxg@mail.notyourbusiness.com>
+Subject: Greetings
+To: groups@rr-staging.click
+Content-Type: multipart/alternative; boundary="94eb2c09cb6a44563f0554e58031"
+
+--94eb2c09cb6a44563f0554e58031
+Content-Type: text/plain; charset="UTF-8"
+
+I am an email.
+
+--94eb2c09cb6a44563f0554e58031
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">I am an email.</div>
+
+--94eb2c09cb6a44563f0554e58031--

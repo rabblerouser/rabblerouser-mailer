@@ -18,4 +18,22 @@ const event = {
 
 streamClient.publish('send-email', event)
   .then(data => console.log('send-email event succesfuly published:', data))
-  .catch(error => console.log('send-email event publishing failed:', error));
+  .catch(error => {
+    console.log('send-email event publishing failed:', error)
+    process.exit(1);
+  });
+
+const largeEmailEvent = {
+  id: 'some-random-id',
+  from: 'campaigns@rabblerouser.team',
+  to: ['pam@example.com'],
+  subject: 'This email body is coming to you from S3!',
+  bodyLocation: 'email-from-john',
+};
+
+streamClient.publish('send-email', largeEmailEvent)
+  .then(data => console.log('send-email event succesfuly published:', data))
+  .catch(error => {
+    console.log('send-email event publishing failed:', error)
+    process.exit(1);
+  });

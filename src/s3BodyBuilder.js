@@ -9,7 +9,7 @@ const build = (emailBodyLocation) => {
     .then(s3Object => mailParser(s3Object.Body))
     .then(mail => mail.html)
     .catch(() => {
-      throw new Error('Email not found');
+      throw new Error(`Email body with ${emailBodyLocation} not found`);
     });
 };
 

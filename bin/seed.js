@@ -2,6 +2,11 @@
 // In production, this job should be done by e.g. terraform.
 
 const AWS = require('aws-sdk');
+const path = require('path');
+const fs = require('fs');
+
+const emailFixturePath = path.join(__dirname, 'mimeFile.txt');
+const emailData = fs.readFileSync(emailFixturePath, 'utf-8');
 
 console.log('Creating kinesis stream for development');
 
@@ -25,3 +30,31 @@ kinesis.createStream({ StreamName, ShardCount: 1 }).promise().then(
     process.exit(1);
   }
 );
+
+const s3Endpoint = process.env.S3_ENDPOINT;
+const emailsBucket = process.env.S3_EMAILS_BUCKET;
+
+const s3 = new AWS.S3({
+  endpoint: s3Endpoint,
+  region: 'ap-southeast-2',
+  accessKeyId: 'FAKE',
+  secretAccessKey: 'ALSO FAKE',
+});
+
+s3.createBucket({ 
+  Bucket: emailsBucket 
+})
+.promise()
+.then(() => {
+  return s3.putObject({ 
+    Key: 'email-from-john', 
+    Bucket: emailsBucket, 
+    Body: emailData 
+  })
+  .promise()
+  .then(() => console.log('email uploaded...'));
+})
+.catch(error => {
+  console.error(`Could not upload the email file: ${error.message}`);
+  process.exit(1);
+});

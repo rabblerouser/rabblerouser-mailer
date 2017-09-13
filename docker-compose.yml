@@ -12,12 +12,17 @@ services:
       - kinesis
       - ses
       - event-forwarder
+      - s3
+    links:
+      - "s3:emailsbucket.s3"
     environment:
       NODE_ENV: development
       KINESIS_ENDPOINT: http://kinesis:4567
       SES_ENDPOINT: http://ses:9001
       LISTENER_AUTH_TOKEN: secret
       STREAM_NAME: rabblerouser_stream
+      S3_ENDPOINT: http://s3:4569
+      S3_EMAILS_BUCKET: emailsbucket
     command: npm start
   event-forwarder:
     image: rabblerouser/event-forwarder
@@ -32,3 +37,5 @@ services:
     image: camjackson/aws-ses-local
     volumes:
       - ./sent-mail:/aws-ses-local/output
+  s3:
+    image: lphoward/fake-s3

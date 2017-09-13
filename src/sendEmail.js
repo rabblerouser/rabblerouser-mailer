@@ -53,7 +53,9 @@ const sendEmail = (emailEvent) => {
         const finalSesParams = Object.assign({}, email, {
           Destination: { ToAddresses: [recipient] },
         });
-        return ses.sendEmail(finalSesParams).promise().then(
+        
+        return ses.sendEmail(finalSesParams).promise()
+        .then(
           () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
           () => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`)
         );
