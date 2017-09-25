@@ -1,6 +1,7 @@
 const sendEmail = require('../sendEmail');
 const streamClient = require('../streamClient');
 const ses = require('../ses');
+const s3BodyBuilder = require('../s3BodyBuilder');
 
 describe('sendEmail', () => {
   let sandbox;
@@ -25,31 +26,79 @@ describe('sendEmail', () => {
   const awsSuccess = data => ({ promise: () => Promise.resolve(data) });
   const awsFailure = error => ({ promise: () => Promise.reject(error) });
 
-  it('sends an email to each recipient', () => {
-    ses.sendEmail.returns(awsSuccess());
+  describe('when the email event includes a s3 object key', () => {
+    const s3Email = {
+      id: '123-456',
+      from: 'campaigns@rabblerouser.team',
+      to: ['john@example.com'],
+      subject: 'Do the thing!',
+      bodyLocation: 'theEmailIsHere',
+    };
+    const emailBody = 'I am a long email';
 
-    return sendEmail(email).then(() => {
-      expect(ses.sendEmail).to.have.been.calledWith({
-        Source: 'campaigns@rabblerouser.team',
-        ReplyToAddresses: ['campaigns@rabblerouser.team'],
-        Destination: { ToAddresses: ['john@example.com'] },
-        Message: {
-          Subject: { Data: 'Do the thing!' },
-          Body: {
-            Html: { Data: 'It is very important that you do the thing.' },
+    beforeEach(() => {
+      sandbox.stub(s3BodyBuilder, 'build');
+    });
+
+    it('fetches the email body from s3', () => {
+      ses.sendEmail.returns(awsSuccess({}));
+      s3BodyBuilder.build.resolves(emailBody);
+
+      return sendEmail(s3Email).then(() => {
+        expect(ses.sendEmail).to.have.been.calledWith({
+          Source: 'campaigns@rabblerouser.team',
+          ReplyToAddresses: ['campaigns@rabblerouser.team'],
+          Destination: { ToAddresses: ['john@example.com'] },
+          Message: {
+            Subject: { Data: 'Do the thing!' },
+            Body: {
+              Html: { Data: 'I am a long email' },
+            },
           },
-        },
+        });
       });
-      expect(ses.sendEmail).to.have.been.calledWith({
-        Source: 'campaigns@rabblerouser.team',
-        ReplyToAddresses: ['campaigns@rabblerouser.team'],
-        Destination: { ToAddresses: ['jane@example.com'] },
-        Message: {
-          Subject: { Data: 'Do the thing!' },
-          Body: {
-            Html: { Data: 'It is very important that you do the thing.' },
+    });
+
+    it('attempts to publish a failure event if the body cannot be fetched from s3', () => {
+      s3BodyBuilder.build.rejects('Email not found');
+
+      return sendEmail(s3Email).then(() => {
+        expect(streamClient.publish).to.have.been.calledWith('email-failed', {
+          emailId: '123-456',
+          to: ['john@example.com'],
+        });
+        expect(streamClient.publish.callCount).to.eql(1);
+      });
+    });
+  });
+
+  describe('when the email event includes the body', () => {
+    it('sends an email to each recipient', () => {
+      ses.sendEmail.returns(awsSuccess());
+
+      return sendEmail(email).then(() => {
+        expect(ses.sendEmail).to.have.been.calledWith({
+          Source: 'campaigns@rabblerouser.team',
+          ReplyToAddresses: ['campaigns@rabblerouser.team'],
+          Destination: { ToAddresses: ['john@example.com'] },
+          Message: {
+            Subject: { Data: 'Do the thing!' },
+            Body: {
+              Html: { Data: 'It is very important that you do the thing.' },
+            },
           },
-        },
+        });
+        expect(ses.sendEmail).to.have.been.calledWith({
+          Source: 'campaigns@rabblerouser.team',
+          ReplyToAddresses: ['campaigns@rabblerouser.team'],
+          Destination: { ToAddresses: ['jane@example.com'] },
+          Message: {
+            Subject: { Data: 'Do the thing!' },
+            Body: {
+              Html: { Data: 'It is very important that you do the thing.' },
+            },
+          },
+        });
       });
     });
   });

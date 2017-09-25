@@ -16,23 +16,23 @@ them.
 
 2. Start a Docker container to develop in (this also starts containers for dependent services):
 
-        ./go.sh # For Mac/Linux
+        `bin/dev-environment` # For Mac/Linux
         # Windows not supported yet :(
 
-3. Install dependencies, setup the event stream, run the tests, then start the app:
+---
 
-        npm install
-        npm run seed
-        npm test
-        npm run dev
-
-4. Open up a second terminal, then simulate a `send-email` event (this will not trigger a real email to be sent -
+* To simulate a `send-email` event (this will not trigger a real email to be sent -
   everything is local only):
 
-        ./go.sh
-        npm run simulate
+1. Run the application locally:
 
-5. Verify that the email 'sent' correctly by inspecting the files created inside the `sent-emails` directory.
+        `bin/local`
+
+2. Open up a second terminal, and run:
+
+        `bin/simulate`
+
+3. Verify that the email 'sent' correctly by inspecting the files created inside the `sent-emails` directory.
 
 ## SES Setup
 

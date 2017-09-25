@@ -2,7 +2,7 @@ version: '2'
 services:
   mailer:
     build:
-      context: docker/
+      context: .
       dockerfile: Dockerfile.dev
     volumes:
       - '.:/app'
@@ -11,21 +11,21 @@ services:
     depends_on:
       - kinesis
       - ses
+      - event-forwarder
+      - s3
+    links:
+      - "s3:emailsbucket.s3"
     environment:
       NODE_ENV: development
       KINESIS_ENDPOINT: http://kinesis:4567
       SES_ENDPOINT: http://ses:9001
       LISTENER_AUTH_TOKEN: secret
       STREAM_NAME: rabblerouser_stream
-    command: sleep 2147483647 # Sleep forever, we'll shell into the container later
-    stdin_open: true
-    user: $UID
-    tty: true
+      S3_ENDPOINT: http://s3:4569
+      S3_EMAILS_BUCKET: emailsbucket
+    command: npm start
   event-forwarder:
     image: rabblerouser/event-forwarder
-    depends_on:
-      - kinesis
-      - mailer
     environment:
       KINESIS_ENDPOINT: http://kinesis:4567
       LISTENER_ENDPOINT: http://mailer:3001/events
@@ -37,3 +37,5 @@ services:
     image: camjackson/aws-ses-local
     volumes:
       - ./sent-mail:/aws-ses-local/output
+  s3:
+    image: lphoward/fake-s3
