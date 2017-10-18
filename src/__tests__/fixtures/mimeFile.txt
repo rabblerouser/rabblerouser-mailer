@@ -1,14 +1,14 @@
-Return-Path: <jane.doe@notyourbusiness.com>
+Return-Path: <superadmin@rabblerouser.team>
 Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com [209.85.161.180])
  by inbound-smtp.us-west-2.amazonaws.com with SMTP id 0borq0nb95vj1r3l6ir58bs082gs09hm3tbcbuo1
- for groups@rr-staging.click;
+ for everyone@example.com;
  Sat, 22 Jul 2017 10:32:40 +0000 (UTC)
 X-SES-Spam-Verdict: PASS
 X-SES-Virus-Verdict: PASS
-Received-SPF: pass (spfCheck: domain of _spf.google.com designates 209.85.161.180 as permitted sender) client-ip=209.85.161.180; envelope-from=jane.doe@notyourbusiness.com; helo=mail-yw0-f180.google.com;
+Received-SPF: pass (spfCheck: domain of _spf.google.com designates 209.85.161.180 as permitted sender) client-ip=209.85.161.180; envelope-from=superadmin@rabblerouser.team; helo=mail-yw0-f180.google.com;
 Authentication-Results: amazonses.com;
- spf=pass (spfCheck: domain of _spf.google.com designates 209.85.161.180 as permitted sender) client-ip=209.85.161.180; envelope-from=jane.doe@notyourbusiness.com; helo=mail-yw0-f180.google.com;
- dkim=pass header.i=@notyourbusiness.com;
+ spf=pass (spfCheck: domain of _spf.google.com designates 209.85.161.180 as permitted sender) client-ip=209.85.161.180; envelope-from=superadmin@rabblerouser.team; helo=mail-yw0-f180.google.com;
+ dkim=pass header.i=@example.com;
 X-SES-RECEIPT: AEFBQUFBQUFBQUFIdE15NlBuSEVrN0dkQ2hqSytPWnlCTG55aDFuZ2E0Y0pkYzhzUkcvc002N2RERGN1VWw0SldZaXB0eWtFcmdCMFRwNTMyT1VzNitoNjNCZjBlVHB1SEhZRzhLRFhWRFVXYyt0UjBVVHZZMlZaUkZCVW9VdzFtWW9FTG95Qy8wa2VQOHFMOFI4NXExR1p1aDVxT3hZK2g1ZEx6TmgvTWZ6R1UzL0lFc0xTNGVDZkdxaWJIbXdWQUx4Zjk4WjJlR3dndWI0QnBWbFZaMWdFWmoyU09lUGw5MHBzeEFYbWZmUkxaUGI2bTFYNFF0K2tyOHlOV3hyQlVITFdPeGtSV01mdFlxRlYxLzFwdUt2UlRVYmpXL3A3UA==
 X-SES-DKIM-SIGNATURE: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
     s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1500719561;
@@ -18,9 +18,9 @@ X-SES-DKIM-SIGNATURE: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
     w1/LfahbTrQgqdXmgRJFunIa1S9qUK6osTwrd2o4y+R1Cr1kABCh9xPrOU6ufv9tgZG
     +J7zI4OzRUDHjCN8VqclUZQzaFehqM2bJn7YXaeU=
 Received: by mail-yw0-f180.google.com with SMTP id a12so32053734ywh.3
-        for <groups@rr-staging.click>; Sat, 22 Jul 2017 03:32:40 -0700 (PDT)
+        for <everyone@example.com>; Sat, 22 Jul 2017 03:32:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=notyourbusiness.com; s=20161025;
+        d=example.com; s=20161025;
         h=mime-version:from:date:message-id:subject:to;
         bh=Im15eyiCMwLD2aN472gIoHac+uoz+qhgIP7MExF8ToY=;
         b=VkvvsHefOhh09IwRb1r9fqsn5MpIrcenw2OagOY05PoVUd+21sSEj7qor34RQrLgct
@@ -45,11 +45,11 @@ X-Received: by 10.13.193.129 with SMTP id c123mr8336899ywd.137.1500719559750;
  Sat, 22 Jul 2017 03:32:39 -0700 (PDT)
 MIME-Version: 1.0
 Received: by 10.37.73.65 with HTTP; Sat, 22 Jul 2017 03:32:39 -0700 (PDT)
-From: Jane Doe <jane.doe@notyourbusiness.com>
+From: Jane Doe <superadmin@rabblerouser.team>
 Date: Sat, 22 Jul 2017 20:32:39 +1000
-Message-ID: <CAOc2pY-UsfDCCpyPFEcV+5v2kataA3WAJFx+sp8qdvsD=hsMxg@mail.notyourbusiness.com>
+Message-ID: <CAOc2pY-UsfDCCpyPFEcV+5v2kataA3WAJFx+sp8qdvsD=hsMxg@mail.example.com>
 Subject: Greetings
-To: groups@rr-staging.click
+To: everyone@example.com
 Content-Type: multipart/alternative; boundary="94eb2c09cb6a44563f0554e58031"
 
 --94eb2c09cb6a44563f0554e58031
