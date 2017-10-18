@@ -5,7 +5,7 @@ const AWS = require('aws-sdk');
 const path = require('path');
 const fs = require('fs');
 
-const emailFixturePath = path.join(__dirname, 'mimeFile.txt');
+const emailFixturePath = path.join(__dirname, '..', 'src', '__tests__', 'fixtures', 'mimeFile.txt');
 const emailData = fs.readFileSync(emailFixturePath, 'utf-8');
 
 console.log('Creating kinesis stream for development');
