@@ -8,6 +8,6 @@ module.exports = {
   streamName: process.env.STREAM_NAME,
   listenerAuthToken: process.env.LISTENER_AUTH_TOKEN || 'secret',
   s3EmailBucket: process.env.S3_EMAILS_BUCKET || 'bucket',
-  s3Endpoint: process.env.S3_ENDPOINT || 'bucketEndpoint',
+  s3Endpoint: process.env.S3_ENDPOINT,
   s3Region: process.env.S3_REGION || 'ap-southeast-2',
 };
