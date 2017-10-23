@@ -10,8 +10,8 @@ const build = (emailBodyLocation) => {
     .promise()
     .then(s3Object => mailParser(s3Object.Body))
     .then(mail => mail.html)
-    .catch(() => {
-      throw new Error(`Email body with ${JSON.stringify(emailBodyLocation)} not found`);
+    .catch((error) => {
+      throw new Error(`Failed to get and parse S3 object ${bucket}/${emailS3Key}: ${error}`);
     });
 };
 
