@@ -1,5 +1,5 @@
 module.exports = {
-  sesRegion: 'us-east-1',
+  sesRegion: process.env.SES_REGION || 'us-east-1',
   sesEndpoint: process.env.SES_ENDPOINT,
   kinesisRegion: process.env.KINESIS_REGION || 'ap-southeast-2',
   kinesisEndpoint: process.env.KINESIS_ENDPOINT,
