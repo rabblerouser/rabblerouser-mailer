@@ -45,10 +45,10 @@ describe('s3BodyBuilder', () => {
   });
 
   it('should fail if the mime file is not found', () => {
-    s3.getObject.returns(awsFailure());
+    s3.getObject.returns(awsFailure('Not found'));
 
     return s3BodyBuilder({ key: 'emailBodyLocation' }).catch((err) => {
-      expect(err.message).to.equal('Email body with {"key":"emailBodyLocation"} not found');
+      expect(err.message).to.equal('Failed to get and parse S3 object "email-bucket/emailBodyLocation": Not found');
     });
   });
 });

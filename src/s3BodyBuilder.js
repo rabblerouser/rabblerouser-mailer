@@ -11,7 +11,7 @@ const build = (emailBodyLocation) => {
     .then(s3Object => mailParser(s3Object.Body))
     .then(mail => mail.html)
     .catch((error) => {
-      throw new Error(`Failed to get and parse S3 object ${bucket}/${emailS3Key}: ${error}`);
+      throw new Error(`Failed to get and parse S3 object "${bucket}/${emailS3Key}": ${error}`);
     });
 };
 
