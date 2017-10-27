@@ -1,11 +1,11 @@
 const sendEmail = require('../sendEmail');
 const streamClient = require('../streamClient');
-const ses = require('../ses');
-const s3BodyBuilder = require('../s3BodyBuilder');
+const nodemailer = require('../nodemailer');
+const s3MailParser = require('../s3MailParser');
 
 describe('sendEmail', () => {
   let sandbox;
-  const email = {
+  const emailEvent = {
     id: '123-456',
     from: 'campaigns@rabblerouser.team',
     to: ['john@example.com', 'jane@example.com'],
@@ -15,7 +15,8 @@ describe('sendEmail', () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    sandbox.stub(ses, 'sendEmail');
+    sandbox.stub(s3MailParser, 'parse');
+    sandbox.stub(nodemailer, 'sendMail');
     sandbox.stub(streamClient, 'publish').resolves();
   });
 
@@ -23,46 +24,40 @@ describe('sendEmail', () => {
     sandbox.restore();
   });
 
-  const awsSuccess = data => ({ promise: () => Promise.resolve(data) });
-  const awsFailure = error => ({ promise: () => Promise.reject(error) });
-
   describe('when the email event includes a s3 object key', () => {
-    const s3Email = {
+    const s3EmailEvent = {
       id: '123-456',
       from: 'campaigns@rabblerouser.team',
       to: ['john@example.com'],
       subject: 'Do the thing!',
       bodyLocation: 'theEmailIsHere',
     };
-    const emailBody = 'I am a long email';
-
-    beforeEach(() => {
-      sandbox.stub(s3BodyBuilder, 'build');
-    });
+    const parsedEmail = {
+      text: 'I am a long email',
+      html: '<div>I am a long email</div>',
+      attachments: ['PICTURE!'],
+    };
 
     it('fetches the email body from s3', () => {
-      ses.sendEmail.returns(awsSuccess({}));
-      s3BodyBuilder.build.resolves(emailBody);
+      nodemailer.sendMail.resolves();
+      s3MailParser.parse.withArgs('theEmailIsHere').resolves(parsedEmail);
 
-      return sendEmail(s3Email).then(() => {
-        expect(ses.sendEmail).to.have.been.calledWith({
-          Source: 'campaigns@rabblerouser.team',
-          ReplyToAddresses: ['campaigns@rabblerouser.team'],
-          Destination: { ToAddresses: ['john@example.com'] },
-          Message: {
-            Subject: { Data: 'Do the thing!' },
-            Body: {
-              Html: { Data: 'I am a long email' },
-            },
-          },
+      return sendEmail(s3EmailEvent).then(() => {
+        expect(nodemailer.sendMail).to.have.been.calledWith({
+          from: 'campaigns@rabblerouser.team',
+          to: ['john@example.com'],
+          subject: 'Do the thing!',
+          text: 'I am a long email',
+          html: '<div>I am a long email</div>',
+          attachments: ['PICTURE!'],
         });
       });
     });
 
-    it('attempts to publish a failure event if the body cannot be fetched from s3', () => {
-      s3BodyBuilder.build.rejects('Email not found');
+    it('publishes a failure event if the body cannot be fetched or parsed', () => {
+      s3MailParser.parse.rejects('Email not found');
 
-      return sendEmail(s3Email).then(() => {
+      return sendEmail(s3EmailEvent).then(() => {
         expect(streamClient.publish).to.have.been.calledWith('email-failed', {
           emailId: '123-456',
           to: ['john@example.com'],
@@ -74,39 +69,31 @@ describe('sendEmail', () => {
 
   describe('when the email event includes the body', () => {
     it('sends an email to each recipient', () => {
-      ses.sendEmail.returns(awsSuccess());
+      nodemailer.sendMail.resolves();
 
-      return sendEmail(email).then(() => {
-        expect(ses.sendEmail).to.have.been.calledWith({
-          Source: 'campaigns@rabblerouser.team',
-          ReplyToAddresses: ['campaigns@rabblerouser.team'],
-          Destination: { ToAddresses: ['john@example.com'] },
-          Message: {
-            Subject: { Data: 'Do the thing!' },
-            Body: {
-              Html: { Data: 'It is very important that you do the thing.' },
-            },
-          },
+      return sendEmail(emailEvent).then(() => {
+        expect(nodemailer.sendMail).to.have.been.calledWith({
+          from: 'campaigns@rabblerouser.team',
+          to: ['john@example.com'],
+          subject: 'Do the thing!',
+          text: 'It is very important that you do the thing.',
+          html: 'It is very important that you do the thing.',
         });
-        expect(ses.sendEmail).to.have.been.calledWith({
-          Source: 'campaigns@rabblerouser.team',
-          ReplyToAddresses: ['campaigns@rabblerouser.team'],
-          Destination: { ToAddresses: ['jane@example.com'] },
-          Message: {
-            Subject: { Data: 'Do the thing!' },
-            Body: {
-              Html: { Data: 'It is very important that you do the thing.' },
-            },
-          },
+        expect(nodemailer.sendMail).to.have.been.calledWith({
+          from: 'campaigns@rabblerouser.team',
+          to: ['jane@example.com'],
+          subject: 'Do the thing!',
+          text: 'It is very important that you do the thing.',
+          html: 'It is very important that you do the thing.',
         });
       });
     });
   });
 
   it('publishes a single event for all email successes', () => {
-    ses.sendEmail.returns(awsSuccess());
+    nodemailer.sendMail.resolves();
 
-    return sendEmail(email).then(() => {
+    return sendEmail(emailEvent).then(() => {
       expect(streamClient.publish).to.have.been.calledWith('email-sent', {
         emailId: '123-456',
         to: ['john@example.com', 'jane@example.com'],
@@ -116,15 +103,15 @@ describe('sendEmail', () => {
   });
 
   it('does not publish an email success event if they all failed', () => {
-    ses.sendEmail.returns(awsFailure());
-    return sendEmail(email).then(() => {
+    nodemailer.sendMail.rejects();
+    return sendEmail(emailEvent).then(() => {
       expect(streamClient.publish).not.to.have.been.calledWith('email-sent', sinon.match.any);
     });
   });
 
   it('publishes a single event for all email failures', () => {
-    ses.sendEmail.returns(awsFailure());
-    return sendEmail(email).then(() => {
+    nodemailer.sendMail.rejects();
+    return sendEmail(emailEvent).then(() => {
       expect(streamClient.publish).to.have.been.calledWith('email-failed', {
         emailId: '123-456',
         to: ['john@example.com', 'jane@example.com'],
@@ -134,18 +121,18 @@ describe('sendEmail', () => {
   });
 
   it('does not publish an email failure event if they all succeeded', () => {
-    ses.sendEmail.returns(awsSuccess());
-    return sendEmail(email).then(() => {
+    nodemailer.sendMail.resolves();
+    return sendEmail(emailEvent).then(() => {
       expect(streamClient.publish).not.to.have.been.calledWith('email-failed', sinon.match.any);
     });
   });
 
   it('continues sending emails when email sending fails', () => {
-    ses.sendEmail.onCall(0).returns(awsFailure());
-    ses.sendEmail.onCall(1).returns(awsSuccess());
+    nodemailer.sendMail.onCall(0).rejects();
+    nodemailer.sendMail.onCall(1).resolves();
 
-    return sendEmail(email).then(() => {
-      expect(ses.sendEmail.callCount).to.eql(2);
+    return sendEmail(emailEvent).then(() => {
+      expect(nodemailer.sendMail.callCount).to.eql(2);
     });
   });
 });

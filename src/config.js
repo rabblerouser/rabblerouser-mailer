@@ -7,7 +7,7 @@ module.exports = {
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'FAKE',
   streamName: process.env.STREAM_NAME,
   listenerAuthToken: process.env.LISTENER_AUTH_TOKEN || 'secret',
-  s3EmailBucket: process.env.S3_EMAILS_BUCKET || 'bucket',
+  s3EmailBucket: process.env.S3_EMAILS_BUCKET || 'email-bucket',
   s3Endpoint: process.env.S3_ENDPOINT,
   s3Region: process.env.S3_REGION || 'ap-southeast-2',
 };

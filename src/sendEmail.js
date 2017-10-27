@@ -1,9 +1,7 @@
 const logger = require('./logger');
-const ses = require('./ses');
+const nodemailer = require('./nodemailer');
 const streamClient = require('./streamClient');
-const s3BodyBuilder = require('./s3BodyBuilder.js');
-
-const data = string => ({ Data: string });
+const s3MailParser = require('./s3MailParser.js');
 
 const publishEmailEvent = (eventType, emailId, recipients) => () => {
   if (!recipients.length) { return Promise.resolve(); }
@@ -14,30 +12,14 @@ const publishEmailEvent = (eventType, emailId, recipients) => () => {
     });
 };
 
-const sesParams = (email) => {
-  const { from, subject, body } = email;
-
-  return {
-    Source: from,
-    ReplyToAddresses: [from],
-    Message: {
-      Subject: data(subject),
-      Body: {
-        Html: data(body),
-      },
-    },
-  };
-};
-
-const assembleEmail = (email) => {
-  const { from, subject, body, bodyLocation } = email;
+const assembleEmail = (emailEvent) => {
+  const { from, subject, body, bodyLocation } = emailEvent;
 
   if (body) {
-    return Promise.resolve(sesParams({ from, subject, body }));
+    return Promise.resolve({ from, subject, text: body, html: body });
   }
-
-  return s3BodyBuilder.build(bodyLocation).then(largeBody => (
-    sesParams({ from, subject, body: largeBody })
+  return s3MailParser.parse(bodyLocation).then(({ text, html, attachments }) => (
+    { from, subject, text, html, attachments }
   ));
 };
 
@@ -48,18 +30,14 @@ const sendEmail = (emailEvent) => {
   const failedRecipients = [];
 
   return assembleEmail(emailEvent)
-    .then(email => (
-      Promise.all(to.map((recipient) => {
-        const finalSesParams = Object.assign({}, email, {
-          Destination: { ToAddresses: [recipient] },
-        });
-
-        return ses.sendEmail(finalSesParams).promise()
-        .then(
-          () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
-          () => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient}`)
-        );
-      }))
+    .then(nodemailerParams => (
+      Promise.all(to.map(recipient => (
+        nodemailer.sendMail({ ...nodemailerParams, to: [recipient] })
+          .then(
+            () => sentRecipients.push(recipient) && logger.info(`Sent email ${id} to ${recipient}`),
+            err => failedRecipients.push(recipient) && logger.error(`Failed to send email ${id} to ${recipient} with error: ${err}`)
+          )
+      )))
     ))
     .then(publishEmailEvent('email-sent', id, sentRecipients))
     .then(publishEmailEvent('email-failed', id, failedRecipients))
