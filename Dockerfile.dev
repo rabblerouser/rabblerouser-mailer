@@ -5,5 +5,5 @@ WORKDIR /app
 
 COPY ./package.json ./
 
-RUN npm --quiet install
+RUN yarn
 VOLUME /app/node_modules

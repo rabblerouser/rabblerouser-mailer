@@ -23,7 +23,7 @@ services:
       STREAM_NAME: rabblerouser_stream
       S3_ENDPOINT: http://s3:4569
       S3_EMAILS_BUCKET: emailsbucket
-    command: npm start
+    command: yarn dev
   event-forwarder:
     image: rabblerouser/event-forwarder
     environment:

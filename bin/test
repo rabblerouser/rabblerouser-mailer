@@ -3,4 +3,4 @@
 cd $(dirname $0)/..
 
 echo "--- Running tests"
-bin/ci-environment npm test
+bin/ci-environment yarn test

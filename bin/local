@@ -3,4 +3,4 @@
 cd $(dirname $0)/..
 
 echo "--- Seeding local environment"
-bin/dev-environment npm run local
+bin/dev-environment yarn local

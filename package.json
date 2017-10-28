@@ -4,13 +4,13 @@
   "description": "Sends emails in response to events",
   "main": "index.js",
   "scripts": {
-    "dev": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "lint": "eslint src",
     "test": "NODE_ENV=test mocha -r src/__tests__/testGlobals.js --recursive src/__tests__",
     "seed": "node bin/seed.js",
     "simulate": "node bin/simulate.js",
     "start": "node src/index.js",
-    "local": "npm run seed && npm run dev"
+    "local": "yarn seed && yarn dev"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
     "eslint-config-airbnb-base": "^11.1.3",
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^3.2.0",
+    "nodemon": "^1.12.1",
     "sinon": "^4.0.2",
     "sinon-chai": "^2.8.0"
   }
