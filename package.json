@@ -4,7 +4,7 @@
   "description": "Sends emails in response to events",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon -L src/index.js",
     "lint": "eslint src",
     "test": "NODE_ENV=test mocha -r src/__tests__/testGlobals.js --recursive src/__tests__",
     "seed": "node bin/seed.js",
