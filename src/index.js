@@ -8,7 +8,7 @@ const sendEmail = require('./sendEmail');
 
 const app = express();
 if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('dev'));
+  app.use(morgan('[:date[iso]] :method :url :status :response-time ms'));
 }
 app.use(bodyParser.json());
 
