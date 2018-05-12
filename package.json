@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/rabblerouser/mailer#readme",
   "dependencies": {
-    "@rabblerouser/stream-client": "^0.8.13",
+    "@rabblerouser/stream-client": "^0.8.14",
     "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",
     "express": "^4.14.1",
